@@ -6,7 +6,7 @@ const { Cycle } = require("./cycle") // Исправлен импорт
 
 // Константы в соответствии с требованиями
 const SEGMENT_SIZE = 100 // Длина сегмента 100 байт
-const CHANCE_OF_ERROR = 0.1 // Вероятность ошибки 10%
+const CHANCE_OF_ERROR = 1 // Вероятность ошибки 10%
 const CHANCE_OF_FRAME_LOSS = 0.02 // Вероятность потери кадра 2% - добавлено
 
 // URL транспортного уровня для отправки обработанных данных
@@ -43,7 +43,7 @@ app.post("/api/code", async (req, res) => {
     console.log("Данные с возможной ошибкой:", queueMistake)
 
     // Декодирование данных и исправление ошибки
-    const queueDecrypted = decodingData(queueMistake, false) // декодированные данные
+    const queueDecrypted = decodingData(queueMistake) // декодированные данные
     console.log("Декодированные данные:", queueDecrypted)
 
     // Преобразование декодированных данных обратно в JSON
@@ -112,8 +112,10 @@ function makeMistake(trueData) {
     if (Math.random() < CHANCE_OF_ERROR) {
       // шанс 10%, что ошибка
       const rand_ind = Math.floor(Math.random() * el.length)
-      if (el[rand_ind] === "1") badData[index] = el.substring(0, rand_ind) + "0" + el.substring(rand_ind + 1)
-      else badData[index] = el.substring(0, rand_ind) + "1" + el.substring(rand_ind + 1)
+      if (el[rand_ind] === "1") 
+        badData[index] = el.substring(0, rand_ind) + "0" + el.substring(rand_ind + 1)
+      else 
+        badData[index] = el.substring(0, rand_ind) + "1" + el.substring(rand_ind + 1)
     } else badData[index] = el
   })
   return badData
@@ -125,7 +127,7 @@ function makeMistake(trueData) {
  * @param cycle Флаг использования циклического кода
  * @returns {*[]} Исправленные данные
  */
-function decodingData(badData, cycle) {
+function decodingData(badData) {
   const trueData = []
 
   badData.map((el, ind) => {
@@ -144,7 +146,7 @@ function returnMyJSON(decryptedData) {
   const bytesList = []
   const textDecoder = new TextDecoder()
   binByte.map((el, ind) => {
-    bytesList.push(Number.parseInt(el, 2))
+    bytesList.push(parseInt(el, 2))
   })
   return textDecoder.decode(new Uint8Array(bytesList))
 }
