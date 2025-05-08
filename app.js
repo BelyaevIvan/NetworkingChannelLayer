@@ -10,7 +10,7 @@ const CHANCE_OF_ERROR = 0.1 // Вероятность ошибки 10%
 const CHANCE_OF_FRAME_LOSS = 0.02 // Вероятность потери кадра 2% - добавлено
 
 // URL транспортного уровня для отправки обработанных данных
-const TRANSPORT_LAYER_URL = "http://localhost:8090/api/transfer" // Добавлен URL транспортного уровня
+const TRANSPORT_LAYER_URL = "http://192.168.1.19:8000/api/transfer" // Добавлен URL транспортного уровня
 
 const app = express()
 const sep = (xs, s) => (xs.length ? [xs.slice(0, s), ...sep(xs.slice(s), s)] : [])
@@ -67,8 +67,9 @@ app.post("/api/code", async (req, res) => {
   }
 })
 
-app.listen(3050, () => {
-  console.log(`Канальный уровень запущен на http://localhost:3050`)
+const LOCAL_IP = "192.168.1.22"
+app.listen(3050, LOCAL_IP, () => {
+  console.log(`Канальный уровень запущен на http://${LOCAL_IP}:3050`)
 })
 
 /**
